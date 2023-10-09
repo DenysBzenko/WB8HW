@@ -5,13 +5,14 @@ document.addEventListener('DOMContentLoaded', function() {
             this.date = new Date();
             this.completed = false;
             this.deleted = false;
+            this.active = false; 
         }
     }
 
     class TodoItemPremium extends TodoItem {
         constructor(text, icon) {
             super(text);
-            this.icon = icon; // URL of the image/icon
+            this.icon = icon; 
         }
     }
 
@@ -47,14 +48,25 @@ document.addEventListener('DOMContentLoaded', function() {
     function loadTasksFromLocalStorage() {
         const storedTasks = localStorage.getItem('tasks');
         const storedSortDirection = localStorage.getItem('sortDirection');
-        tasks = storedTasks ? JSON.parse(storedTasks) : [];
+        tasks = storedTasks ? JSON.parse(storedTasks).map(task => {
+            task.date = new Date(task.date);
+            return task;
+        }) : [];
         sortDirection = storedSortDirection || 'desc';
     }
+    
 
     function pickRandomTask() {
+        tasks.forEach(task => task.active = false);
         const activeTasks = tasks.filter(task => !task.completed && !task.deleted);
         const randomTask = activeTasks[Math.floor(Math.random() * activeTasks.length)];
-        alert(randomTask ? `Your task for now: ${randomTask.text}` : 'No active tasks available.');
+        if (randomTask) {
+            randomTask.active = true; 
+            alert(`Your task for now: ${randomTask.text}`);
+        } else {
+            alert('No active tasks available.');
+        }
+        renderTasks();
     }
 
     function renderTasks() {
@@ -62,12 +74,13 @@ document.addEventListener('DOMContentLoaded', function() {
         sortTasks();
         tasks.forEach((task, index) => {
             const li = document.createElement('li');
-            li.innerHTML = `<span>${task.text} <small>(${formatDate(task.date)})</small></span> <button class='delete' data-index='${index}'>Delete</button>`;
+            li.innerHTML = `<span>${task.text} <small>(${formatDate(task.date)})</small></span> ...`;
             if (task.icon) {
                 li.innerHTML += `<img src="${task.icon}" alt="Icon" width="50">`;
             }
             li.classList.toggle('deleted', task.deleted);
             li.classList.toggle('completed', task.completed);
+            li.classList.toggle('active', task.active);
             DOM.taskList.appendChild(li);
         });
     }

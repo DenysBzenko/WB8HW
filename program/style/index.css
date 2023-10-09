@@ -69,10 +69,23 @@ button:hover {
     text-decoration: line-through;
     color: red;
 }
-#taskList li img {
-    margin-left: 10px;
-    vertical-align: middle;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+#taskList li.active {
+    background-color: #e0f7fa;
+    border: 1px solid #4fc3f7;
+}
+#taskList li span {
+    flex: 1;
+    margin-right: 10px;
+}
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+}
+
+.container {
+    border: 1px solid #e0e0e0;
+}
+
+input[type="text"]::placeholder {
+    color: #aaa;
 }

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style/index.css">
+</head>
+<body>
+    <div class="container">
+        <h1>To-Do List</h1>
+        <input type="text" id="newTask" placeholder="Add a new task...">
+        <input type="file" id="iconFile" accept="image/*"> 
+        <button id="addTask">Save</button>
+        <button id="sortAsc">Sort Ascending</button>
+        <button id="sortDesc">Sort Descending</button>
+        <button id="clearStorage">Clear Storage</button>
+        <button id="pickRandom">Pick Todo to Do Right Now</button>
+        <ul id="taskList"></ul>
+        <button id="removeCompleted">Remove Completed</button>
+        <button id="removeAll">Remove All</button>
+    </div>
+
+    <script>li.innerHTML = `<span>${task.text} <small>(${formatDate(task.date)})</small></span>`;
+        if (task.icon) {
+            li.innerHTML += `<img src="${task.icon}" alt="Icon">`;
+        }
+        li.innerHTML += `<button class='delete' data-index='${index}'>Delete</button>`;
+        </script>
+    <script src="script/index.js"></script>
+</body>
+</html>

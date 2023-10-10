@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const DOM = {
         taskList: document.getElementById('taskList'),
         newTaskInput: document.getElementById('newTask'),
-        addTaskButton: document.getElementById('addTask'),
         removeCompletedButton: document.getElementById('removeCompleted'),
         removeAllButton: document.getElementById('removeAll'),
         sortAscButton: document.getElementById('sortAsc'),
@@ -54,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }) : [];
         sortDirection = storedSortDirection || 'desc';
     }
-    
 
     function pickRandomTask() {
         tasks.forEach(task => task.active = false);
@@ -74,10 +72,12 @@ document.addEventListener('DOMContentLoaded', function() {
         sortTasks();
         tasks.forEach((task, index) => {
             const li = document.createElement('li');
-            li.innerHTML = `<span>${task.text} <small>(${formatDate(task.date)})</small></span> ...`;
+            li.innerHTML = `<span>${task.text} <small>(${formatDate(task.date)})</small></span>`;
             if (task.icon) {
                 li.innerHTML += `<img src="${task.icon}" alt="Icon" width="50">`;
             }
+            li.innerHTML += `<button class='delete' data-index='${index}'>Delete</button>`;
+            
             li.classList.toggle('deleted', task.deleted);
             li.classList.toggle('completed', task.completed);
             li.classList.toggle('active', task.active);
@@ -124,22 +124,32 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        DOM.addTaskButton.addEventListener('click', function() {
-            const taskText = DOM.newTaskInput.value.trim();
-            if (taskText) {
-                const iconURL = DOM.iconFileInput.value;
-                const newTask = iconURL ? new TodoItemPremium(taskText, iconURL) : new TodoItem(taskText);
-                tasks.push(newTask);
-                DOM.newTaskInput.value = '';
-                DOM.iconFileInput.value = '';
-                renderTasks();
-                saveTasksToLocalStorage();
+        DOM.newTaskInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const taskText = DOM.newTaskInput.value.trim();
+                if (taskText) {
+                    const iconURL = DOM.iconFileInput.value;
+                    const newTask = iconURL ? new TodoItemPremium(taskText, iconURL) : new TodoItem(taskText);
+                    tasks.push(newTask);
+                    DOM.newTaskInput.value = '';
+                    DOM.iconFileInput.value = '';
+                    renderTasks();
+                    saveTasksToLocalStorage();
+                }
             }
         });
 
         DOM.removeAllButton.addEventListener('click', function() {
-            tasks = [];
-            renderTasks();
+            if (tasks.some(task => !task.completed)) {
+                const confirmDelete = confirm('Are you sure you want to delete all tasks, including uncompleted ones?');
+                if (confirmDelete) {
+                    tasks = [];
+                    renderTasks();
+                }
+            } else {
+                tasks = [];
+                renderTasks();
+            }
         });
     }
 
